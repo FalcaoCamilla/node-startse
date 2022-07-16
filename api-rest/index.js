@@ -1,4 +1,5 @@
 import express, { request, response }  from "express";
+import {StatusCodes} from 'http-status-codes';
 
 const app = express();
 const port = 3000;
@@ -11,7 +12,7 @@ let users = [
     }
 ]
 
-app.use(express.json) //todos os objetos sendo recebidos como json
+app.use(express.json()) //todos os objetos sendo recebidos como json
 
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`)
@@ -38,5 +39,18 @@ app.post('/users', (request, response) => {
 
     users.push(newUser);
 
-    return response.status(201).send(newUser);
+    return response.status(StatusCodes.CREATED).send(newUser);
 })
+
+app.put('/users/:userId', (request, response) => {
+    const userId = request.params.userId;
+    const updatedUser = request.body;
+
+    users = users.map(user => {
+        if(Number(userId) === user.id){
+            return updatedUser;
+        }
+        return user 
+    })
+    return response.send(updatedUser);
+} )
